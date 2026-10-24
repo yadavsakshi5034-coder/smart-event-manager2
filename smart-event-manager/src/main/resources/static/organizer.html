@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Smart Event Manager - Organizer Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="index.html">Smart Event Manager</a>
+    <div class="navbar-nav ms-auto">
+      <a class="nav-link" href="index.html">Student Portal</a>
+      <a class="nav-link active" href="organizer.html">Organizer</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container py-4">
+  <h2 class="fw-bold mb-3">Organizer dashboard</h2>
+
+  <ul class="nav nav-tabs mb-3" id="orgTabs">
+    <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tabStats">Overview</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabEvents">Events</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabPeople">Participants</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabTasks">Tasks</button></li>
+  </ul>
+
+  <div class="tab-content">
+    <!-- OVERVIEW -->
+    <div class="tab-pane fade show active" id="tabStats">
+      <div class="row g-3" id="statCards"></div>
+    </div>
+
+    <!-- EVENTS -->
+    <div class="tab-pane fade" id="tabEvents">
+      <div class="card stat-card mb-4">
+        <div class="card-body">
+          <h5 id="formTitle" class="mb-3">Create event</h5>
+          <form id="eventForm" class="row g-2" onsubmit="saveEvent(event)">
+            <input type="hidden" id="evId">
+            <div class="col-md-4"><input id="evName" class="form-control" placeholder="Event name" required></div>
+            <div class="col-md-2">
+              <select id="evCategory" class="form-select">
+                <option>Technical</option><option>Cultural</option><option>Sports</option>
+                <option>Workshop</option><option>Seminar</option><option>Other</option>
+              </select>
+            </div>
+            <div class="col-md-2"><input id="evDate" type="date" class="form-control" required></div>
+            <div class="col-md-2"><input id="evVenue" class="form-control" placeholder="Venue"></div>
+            <div class="col-md-2"><input id="evCapacity" type="number" min="1" class="form-control" placeholder="Capacity" required></div>
+            <div class="col-md-10"><input id="evDesc" class="form-control" placeholder="Short description"></div>
+            <div class="col-md-2 d-flex gap-2">
+              <button class="btn btn-primary flex-grow-1" type="submit" id="evSaveBtn">Create</button>
+              <button class="btn btn-light" type="button" onclick="resetEventForm()">Clear</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="table bg-white align-middle shadow-sm">
+          <thead><tr><th>Event</th><th>Date</th><th>Venue</th><th>Seats</th><th>Waitlist</th><th>Status</th><th></th></tr></thead>
+          <tbody id="eventRows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PARTICIPANTS -->
+    <div class="tab-pane fade" id="tabPeople">
+      <div class="row g-2 mb-3">
+        <div class="col-md-5"><select id="peopleEvent" class="form-select" onchange="loadParticipants()"></select></div>
+        <div class="col-md-7 pt-2 small text-muted" id="peopleSummary"></div>
+      </div>
+      <div class="table-responsive">
+        <table class="table bg-white align-middle shadow-sm">
+          <thead><tr><th>Name</th><th>Email</th><th>Status</th><th>Attendance</th><th></th></tr></thead>
+          <tbody id="peopleRows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TASKS -->
+    <div class="tab-pane fade" id="tabTasks">
+      <div class="card stat-card mb-4">
+        <div class="card-body">
+          <form class="row g-2" onsubmit="addTask(event)">
+            <div class="col-md-4"><input id="taskTitle" class="form-control" placeholder="Task (e.g. Book projector)" required></div>
+            <div class="col-md-3">
+              <select id="taskPriority" class="form-select">
+                <option value="1">1 - Critical</option><option value="2">2 - High</option>
+                <option value="3" selected>3 - Medium</option><option value="4">4 - Low</option>
+                <option value="5">5 - Lowest</option>
+              </select>
+            </div>
+            <div class="col-md-3"><select id="taskEvent" class="form-select"></select></div>
+            <div class="col-md-2"><button class="btn btn-primary w-100" type="submit">Add task</button></div>
+          </form>
+        </div>
+      </div>
+
+      <div class="d-flex gap-2 mb-3">
+        <button class="btn btn-success" onclick="processNext()">▶ Process next task</button>
+        <button class="btn btn-outline-secondary" id="undoBtn" onclick="undoLast()">↶ Undo</button>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-lg-7">
+          <h6 class="text-uppercase text-muted">Pending (highest priority first)</h6>
+          <div id="pendingTasks"></div>
+        </div>
+        <div class="col-lg-5">
+          <h6 class="text-uppercase text-muted">Completed</h6>
+          <div id="doneTasks"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/common.js"></script>
+<script src="js/organizer.js"></script>
+</body>
+</html>
